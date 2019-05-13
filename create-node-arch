@@ -1,0 +1,30 @@
+#!/usr/bin/python3
+
+import sys
+import os
+import json
+from collections import OrderedDict
+
+PROJECT_NAME = sys.argv[1]
+
+PROJECT_FILES = '/opt/nodejs-architecture/'
+
+os.system("mkdir {PROJECT_NAME}".format(PROJECT_NAME=PROJECT_NAME))
+
+os.system("cp -r {PROJECT_FILES}* {PROJECT_NAME}/".format(PROJECT_NAME=PROJECT_NAME, PROJECT_FILES=PROJECT_FILES))
+
+package_json_path = '{PROJECT_NAME}/package.json'.format(PROJECT_NAME=PROJECT_NAME)
+
+# Opens the package.json file and change the name to the project name
+with open(package_json_path, 'r') as read_package_file:
+    string_file = read_package_file.read()
+    project_data = json.loads(string_file, object_pairs_hook=OrderedDict)
+    project_data["name"] = PROJECT_NAME
+    PACKAGE_JSON = json.dumps(project_data, indent=2)
+
+with open(package_json_path, 'w') as write_package_file:
+    write_package_file.write(PACKAGE_JSON)
+
+os.system("cd {PROJECT_NAME} && npm install".format(PROJECT_NAME=PROJECT_NAME))
+
+print("You are ready to go")
